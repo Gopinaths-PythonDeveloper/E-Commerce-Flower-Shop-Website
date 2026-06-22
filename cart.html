@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cart</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.products .box-container .box{
+    flex: 0 1 18rem;
+    max-width: 18rem;
+}
+
+.products .box-container .box .image img{
+    height: 12rem;
+}
+
+.products .box-container .box .content h3{
+    font-size: 1.5rem;
+}
+
+.products .box-container .box .content .price{
+    font-size: 1.6rem;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 class="heading">
+Shopping <span>Cart</span>
+</h1>
+
+<section class="products">
+
+<div class="box-container"
+id="cart-items">
+
+</div>
+
+</section>
+
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+let container =
+document.getElementById("cart-items");
+
+displayCart();
+
+function displayCart(){
+
+container.innerHTML = "";
+
+let total = 0;
+
+if(cart.length === 0){
+
+container.innerHTML =
+"<h2 style='font-size:25px'>Cart is Empty 🛒</h2>";
+
+return;
+}
+
+cart.forEach((item,index)=>{
+
+let price =
+parseInt(
+item.price.replace(/[₹, ]/g,"")
+);
+
+total += price * item.quantity;
+
+container.innerHTML += `
+
+<div class="box">
+
+<span class="discount">
+🛒 Cart
+</span>
+
+<div class="image">
+<img src="${item.image}">
+</div>
+
+<div class="content">
+
+<h3>${item.name}</h3>
+
+<div class="price">
+
+${item.price}
+
+<span style="text-decoration:line-through;color:gray;">
+${item.originalPrice}
+</span>
+
+</div>
+
+<br>
+
+<h3>
+Qty :
+<button onclick="decreaseQty(${index})">-</button>
+
+${item.quantity}
+
+<button onclick="increaseQty(${index})">+</button>
+</h3>
+
+<br>
+
+<button class="btn"
+onclick="removeCart(${index})">
+Remove
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML += `
+
+<div style="
+width:100%;
+text-align:center;
+margin-top:30px;
+font-size:30px;
+font-weight:bold;">
+
+Total : ₹${total}
+
+<br><br>
+
+<button class="btn"
+onclick="clearCart()">
+Clear Cart
+</button>
+
+</div>
+
+`;
+
+}
+
+function increaseQty(index){
+
+cart[index].quantity++;
+
+saveCart();
+
+}
+
+function decreaseQty(index){
+
+if(cart[index].quantity > 1){
+
+cart[index].quantity--;
+
+saveCart();
+
+}
+
+}
+
+function removeCart(index){
+
+cart.splice(index,1);
+
+saveCart();
+
+}
+
+function clearCart(){
+
+localStorage.removeItem("cart");
+
+location.reload();
+
+}
+
+function saveCart(){
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+</html>

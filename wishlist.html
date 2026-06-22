@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wishlist</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+.products .box-container .box{
+    flex: 0 1 22rem;
+    max-width: 22rem;
+}
+
+.products .box-container{
+    justify-content: center;
+}
+
+.products .box-container .box .image img{
+    height: 15rem;
+}
+
+.products .box-container .box .content h3{
+    font-size: 1.8rem;
+}
+
+.products .box-container .box .content .price{
+    font-size: 1.8rem;
+}
+
+.products .box-container .box .content .btn{
+    padding: .7rem 2rem;
+    font-size: 1.4rem;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 class="heading"> My <span>Wishlist</span> </h1>
+
+<section class="products">
+
+    <div class="box-container" id="wishlist-items">
+
+    </div>
+
+</section>
+
+<script>
+
+let wishlist =
+JSON.parse(localStorage.getItem("wishlist")) || [];
+
+let container =
+document.getElementById("wishlist-items");
+
+displayWishlist();
+
+function displayWishlist(){
+
+container.innerHTML = "";
+
+if(wishlist.length === 0){
+
+container.innerHTML =
+"<h2 style='font-size:25px'>Wishlist is Empty ❤️</h2>";
+
+return;
+}
+
+wishlist.forEach((item,index)=>{
+
+container.innerHTML += `
+
+<div class="box">
+
+<span class="discount">❤️ Saved</span>
+
+<div class="image">
+<img src="${item.image}">
+</div>
+
+<div class="content">
+
+<h3>${item.name}</h3>
+
+<div class="price">
+
+${item.price}
+
+<span style="text-decoration:line-through;color:gray;">
+${item.originalPrice}
+</span>
+
+</div>
+
+<br>
+
+<button class="btn"
+onclick="moveToCart(${index})">
+Move To Cart
+</button>
+
+<br><br>
+
+<button class="btn"
+onclick="removeWishlist(${index})">
+Remove
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+function moveToCart(index){
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+let item = wishlist[index];
+
+let exists =
+cart.find(product => product.name === item.name);
+
+if(exists){
+
+exists.quantity += 1;
+
+}else{
+
+cart.push(item);
+
+}
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+wishlist.splice(index,1);
+
+localStorage.setItem(
+"wishlist",
+JSON.stringify(wishlist)
+);
+
+location.reload();
+
+}
+
+function removeWishlist(index){
+
+wishlist.splice(index,1);
+
+localStorage.setItem(
+"wishlist",
+JSON.stringify(wishlist)
+);
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
